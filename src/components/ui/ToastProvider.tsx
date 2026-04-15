@@ -9,7 +9,8 @@ interface ToastItem {
 }
 
 interface ToastContextValue {
-  showToast: (message: string, type?: ToastType, duration?: number) => void;
+  showToast: (message: string, type?: ToastType, duration?: number) => string;
+  dismissToast: (id: string) => void;
 }
 
 const ToastContext = createContext<ToastContextValue | undefined>(undefined);
@@ -21,12 +22,20 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
     const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
     setToasts((current) => [{ id, type, message }, ...current]);
 
-    window.setTimeout(() => {
-      setToasts((current) => current.filter((toast) => toast.id !== id));
-    }, duration);
+    if (duration > 0) {
+      window.setTimeout(() => {
+        setToasts((current) => current.filter((toast) => toast.id !== id));
+      }, duration);
+    }
+
+    return id;
   };
 
-  const value = useMemo(() => ({ showToast }), []);
+  const dismissToast = (id: string) => {
+    setToasts((current) => current.filter((toast) => toast.id !== id));
+  };
+
+  const value = useMemo(() => ({ showToast, dismissToast }), []);
 
   const getToastStyles = (type: ToastType) => {
     switch (type) {

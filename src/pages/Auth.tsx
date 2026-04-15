@@ -41,13 +41,16 @@ const Auth = () => {
     setError("");
     setLoading(true);
 
+    let loadingToastId: string | undefined;
+
     try {
       if (isLogin) {
-        toast.showToast("Signing in...", "loading");
+        loadingToastId = toast.showToast("Signing in...", "loading", 0);
         const response = await api.login({
           email: formData.email,
           password: formData.password,
         });
+        toast.dismissToast(loadingToastId);
         localStorage.setItem("accessToken", response.data.accessToken);
         localStorage.setItem("user", JSON.stringify(response.data.user));
         toast.showToast("Welcome back! Redirecting to booking.", "success");
@@ -59,18 +62,20 @@ const Auth = () => {
           setLoading(false);
           return;
         }
-        toast.showToast("Creating your account...", "loading");
+        loadingToastId = toast.showToast("Creating your account...", "loading", 0);
         const response = await api.register({
           name: formData.name,
           email: formData.email,
           password: formData.password,
         });
+        toast.dismissToast(loadingToastId);
         localStorage.setItem("user", JSON.stringify(response.data.user));
         setIsLogin(true);
         toast.showToast("Registration successful! Please login.", "success");
         setError("Registration successful! Please login.");
       }
     } catch (err) {
+      if (loadingToastId) toast.dismissToast(loadingToastId);
       const message = err instanceof Error ? err.message : "An error occurred";
       toast.showToast(message, "error");
       setError(message);

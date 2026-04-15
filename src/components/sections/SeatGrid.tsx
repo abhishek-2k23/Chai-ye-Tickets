@@ -75,10 +75,11 @@ const SeatGrid = () => {
       return;
     }
 
-    toast.showToast("Booking seat...", "loading", 2500);
+    const loadingToastId = toast.showToast("Booking seat...", "loading", 0);
     setBooking(true);
     try {
       const response = await api.bookSeat(selectedSeat.id, user.name);
+      toast.dismissToast(loadingToastId);
       const bookedSeat = response.data.bookedSeat;
       setSeats(prev => prev.map(seat => 
         seat.id === bookedSeat.id
@@ -88,6 +89,7 @@ const SeatGrid = () => {
       setSelected(null);
       toast.showToast("Seat booked successfully!", "success");
     } catch (error) {
+      toast.dismissToast(loadingToastId);
       console.error("Booking failed:", error);
       toast.showToast("Booking failed. Please try again.", "error");
     } finally {
