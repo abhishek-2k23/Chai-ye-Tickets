@@ -56,7 +56,7 @@ npm run preview
 Create a `.env` file in the `seat-grab` folder with:
 
 ```env
-VITE_API_URL=http://localhost:4000
+VITE_API_URL=https://seat-grab-backend.onrender.com
 ```
 
 Adjust the URL to point to your backend API.
