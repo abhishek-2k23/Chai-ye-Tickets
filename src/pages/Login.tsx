@@ -4,10 +4,10 @@ const Login = () => {
       
       {/* Logo */}
       <h1 className="text-3xl font-bold text-primary text-glow mb-2">
-        NOIR CURATOR
+        CHAI-YE TICKETS
       </h1>
       <p className="text-muted-foreground mb-10 tracking-widest text-sm">
-        THE PRIVATE DIGITAL GALLERY
+        THE TICKET BOOKING EXPERIENCE
       </p>
 
       {/* Card */}
@@ -55,7 +55,7 @@ const Login = () => {
       </div>
 
       <p className="mt-10 text-xs text-muted-foreground">
-        © 2024 NOIR CURATOR. ALL RIGHTS RESERVED.
+        © 2024 CHAI-YE TICKETS. ALL RIGHTS RESERVED.
       </p>
     </div>
   );
