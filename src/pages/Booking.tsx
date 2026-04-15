@@ -1,9 +1,11 @@
-import React from 'react'
+import BookingLayout from "@/components/sections/BookingLayout";
 
-function Booking() {
+const Booking = () => {
   return (
-    <div>Booking</div>
-  )
-}
+    <div className="bg-background text-foreground min-h-screen px-10 py-10">
+      <BookingLayout />
+    </div>
+  );
+};
 
-export default Booking
+export default Booking;

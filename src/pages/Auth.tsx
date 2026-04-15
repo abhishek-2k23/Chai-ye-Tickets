@@ -1,4 +1,8 @@
-const Login = () => {
+import { useState } from "react";
+
+const Auth = () => {
+  const [isLogin, setIsLogin] = useState(true);
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground px-6">
       
@@ -14,11 +18,28 @@ const Login = () => {
       <div className="w-full max-w-md bg-card border border-border rounded-2xl p-8 space-y-6 shadow-xl">
         
         <div>
-          <h2 className="text-2xl font-semibold">Welcome Back</h2>
+          <h2 className="text-2xl font-semibold">
+            {isLogin ? "Welcome Back" : "Create Account"}
+          </h2>
           <p className="text-muted-foreground text-sm">
-            Access your curated selection.
+            {isLogin
+              ? "Access your curated selection."
+              : "Join the noir experience."}
           </p>
         </div>
+
+        {!isLogin && (
+          <div>
+            <label className="text-xs text-muted-foreground">
+              Name
+            </label>
+            <input
+              type="text"
+              placeholder="Enter your name"
+              className="w-full mt-2 p-3 rounded-lg bg-muted border border-border outline-none"
+            />
+          </div>
+        )}
 
         {/* Email */}
         <div>
@@ -44,13 +65,34 @@ const Login = () => {
           />
         </div>
 
+        {/* 🔥 Register Only Field */}
+        {!isLogin && (
+          <div>
+            <label className="text-xs text-muted-foreground">
+              CONFIRM PASSWORD
+            </label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              className="w-full mt-2 p-3 rounded-lg bg-muted border border-border outline-none"
+            />
+          </div>
+        )}
+
         {/* Button */}
         <button className="w-full py-3 rounded-full bg-primary text-white font-semibold shadow-lg hover:scale-105 transition-all">
-          ENTER THE GALLERY
+          {isLogin ? "ENTER THE GALLERY" : "CREATE ACCOUNT"}
         </button>
 
+        {/* Toggle */}
         <p className="text-center text-sm text-muted-foreground">
-          Request Invite
+          {isLogin ? "Not registered yet?" : "Already have an account?"}{" "}
+          <span
+            onClick={() => setIsLogin(!isLogin)}
+            className="text-primary cursor-pointer hover:underline"
+          >
+            {isLogin ? "Register now" : "Login"}
+          </span>
         </p>
       </div>
 
@@ -61,4 +103,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Auth;

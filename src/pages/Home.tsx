@@ -1,9 +1,11 @@
-import React from 'react'
+import Hero from "@/components/sections/Hero";
 
-function Home() {
+const Home = () => {
   return (
-    <div>Home</div>
-  )
-}
+    <div className="bg-background text-foreground min-h-screen">
+      <Hero />
+    </div>
+  );
+};
 
-export default Home
+export default Home;
