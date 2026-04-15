@@ -63,10 +63,11 @@ const SeatGrid = () => {
     toast.showToast("Booking seat...", "loading", 2500);
     setBooking(true);
     try {
-      await api.bookSeat(selectedSeat.id, user.name);
+      const response = await api.bookSeat(selectedSeat.id, user.name);
+      const bookedSeat = response.data.bookedSeat;
       setSeats(prev => prev.map(seat => 
-        seat.id === selectedSeat.id
-          ? { ...seat, isbooked: 1, name: user.name }
+        seat.id === bookedSeat.id
+          ? { ...seat, ...bookedSeat }
           : seat
       ));
       setSelected(null);
@@ -94,8 +95,7 @@ const SeatGrid = () => {
           <div key={row} className="flex gap-3 justify-center">
             {Array.from({ length: cols }).map((_, i) => {
               const seatId = `${row}${i + 1}`;
-              const seatNumber = (row.charCodeAt(0) - 65) * cols + i + 1;
-              const seatData = seats.find(s => s.id === seatNumber);
+              const seatData = seats.find(s => s.seat_number === seatId);
               const isBooked = seatData?.isbooked === 1;
               const isSelected = selected === seatId;
 

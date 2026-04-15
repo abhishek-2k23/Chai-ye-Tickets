@@ -46,13 +46,13 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <div className="fixed right-4 top-4 z-50 flex flex-col gap-3 items-end">
+      <div className="fixed left-1/2 top-4 z-50 flex w-full max-w-xl -translate-x-1/2 flex-col items-center gap-3 px-4">
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className={`max-w-xs rounded-2xl border px-4 py-3 shadow-xl transition-all duration-300 ease-out ${getToastStyles(toast.type)}`}
+            className={`w-full max-w-xs rounded-2xl border px-4 py-3 shadow-xl transition-all duration-300 ease-out ${getToastStyles(toast.type)}`}
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 justify-center">
               {toast.type === "loading" && (
                 <span className="inline-flex h-2.5 w-2.5 animate-spin rounded-full border border-white border-t-transparent" />
               )}
