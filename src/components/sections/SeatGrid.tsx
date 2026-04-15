@@ -11,8 +11,8 @@ interface SeatData {
   seat_number: string;
 }
 
-const rows = ["A", "B", "C", "D", "E"];
-const cols = 8;
+const getRowFromSeat = (seatNumber: string) => seatNumber.match(/^[A-Z]+/)?.[0] ?? "";
+const getSeatIndex = (seatNumber: string) => parseInt(seatNumber.match(/\d+/)?.[0] ?? "0", 10);
 
 const SeatGrid = () => {
   const [selected, setSelected] = useState<string | null>(null);
@@ -36,6 +36,21 @@ const SeatGrid = () => {
 
     fetchSeats();
   }, [toast]);
+
+  const seatRows = (() => {
+    const uniqueRows = Array.from(
+      new Set(seats.map((seat) => getRowFromSeat(seat.seat_number)))
+    ).filter(Boolean) as string[];
+
+    return uniqueRows
+      .sort((a, b) => a.localeCompare(b))
+      .map((row) => ({
+        row,
+        seats: seats
+          .filter((seat) => getRowFromSeat(seat.seat_number) === row)
+          .sort((a, b) => getSeatIndex(a.seat_number) - getSeatIndex(b.seat_number)),
+      }));
+  })();
 
   const toggleSeat = (seatId: string) => {
     if (selected === seatId) {
@@ -90,26 +105,28 @@ const SeatGrid = () => {
     <div className="space-y-6">
       
       {/* Grid */}
-      <div className="space-y-3">
-        {rows.map((row) => (
-          <div key={row} className="flex gap-3 justify-center">
-            {Array.from({ length: cols }).map((_, i) => {
-              const seatId = `${row}${i + 1}`;
-              const seatData = seats.find(s => s.seat_number === seatId);
-              const isBooked = seatData?.isbooked === 1;
-              const isSelected = selected === seatId;
+      <div className="space-y-3 max-h-[55vh] overflow-y-auto overflow-x-auto hide-scrollbar rounded-3xl p-3 border border-border bg-card/80">
+        {seatRows.map(({ row, seats: rowSeats }) => (
+          <div key={row} className="flex items-center gap-3">
+            <div className="w-6 text-sm font-semibold text-muted-foreground">{row}</div>
+            <div className="grid flex-1 grid-flow-col gap-3" style={{ gridAutoColumns: "minmax(2rem, auto)" }}>
+              {rowSeats.map((seatData) => {
+                const seatId = seatData.seat_number;
+                const isBooked = seatData.isbooked === 1;
+                const isSelected = selected === seatId;
 
-              return (
-                <Seat
-                  key={seatId}
-                  id={seatId}
-                  selected={isSelected}
-                  booked={isBooked}
-                  bookerName={seatData?.name}
-                  onClick={() => !isBooked && toggleSeat(seatId)}
-                />
-              );
-            })}
+                return (
+                  <Seat
+                    key={seatId}
+                    id={seatId}
+                    selected={isSelected}
+                    booked={isBooked}
+                    bookerName={seatData?.name}
+                    onClick={() => !isBooked && toggleSeat(seatId)}
+                  />
+                );
+              })}
+            </div>
           </div>
         ))}
       </div>
@@ -152,6 +169,44 @@ const SeatGrid = () => {
         >
           {booking ? "Booking..." : "CONFIRM BOOKING"}
         </button>
+      </div>
+
+      <div className="border-t border-border pt-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-muted-foreground">Your booked tickets</p>
+          </div>
+        </div>
+
+        <div className="mt-4 max-h-56 overflow-y-auto hide-scrollbar rounded-xl border border-red-500/30 p-4">
+          {(() => {
+            const user = JSON.parse(localStorage.getItem("user") || "null");
+            const bookedSeats = seats.filter(
+              seat => seat.isbooked === 1 && user?.name && seat.name === user.name
+            );
+
+            if (bookedSeats.length === 0) {
+              return (
+                <div className="rounded-xl border border-dashed border-red-500/40 bg-red-500/5 p-6 text-center text-sm text-muted-foreground">
+                  No booked tickets yet.
+                </div>
+              );
+            }
+
+            return (
+              <div className="flex flex-wrap gap-2">
+                {bookedSeats.map((seat) => (
+                  <span
+                    key={seat.id}
+                    className="inline-flex items-center justify-center rounded-full border border-red-400 bg-red-500/15 px-3 py-2 text-sm font-semibold text-white"
+                  >
+                    {seat.seat_number}
+                  </span>
+                ))}
+              </div>
+            );
+          })()}
+        </div>
       </div>
     </div>
   );
